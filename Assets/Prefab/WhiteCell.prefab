@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4786351580712096104}
   - component: {fileID: 4786351580712096105}
   - component: {fileID: 4812224325142186372}
+  - component: {fileID: 9211160668918432063}
   m_Layer: 0
   m_Name: WhiteCell
-  m_TagString: Untagged
+  m_TagString: Cell
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +92,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4786351580712096102}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.24884033, y: 0.70683026, z: 0.71715736}
@@ -112,3 +113,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!114 &9211160668918432063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4786351580712096102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a376a74f6ec96514aa317132dca361b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 1.5
+  Hp: 4
+  XRotation: 0
+  material:
+  - {fileID: 2100000, guid: 62d7d6535ba8fba42b5652a0a0ad6c15, type: 2}
+  - {fileID: 2100000, guid: f8d72884ad925d64395a9e91fd723ea1, type: 2}
+  Item:
+  - {fileID: 9092710299216662251, guid: 3e81ec1cc0bff974388b8af3e8795b8c, type: 3}
+  - {fileID: 6403217954091425449, guid: 90fea77f09eff424a87559ddd5572b1a, type: 3}
+  - {fileID: 4918639488928656814, guid: 8901462f04dff9843af99702eb207060, type: 3}
+  - {fileID: 7363524460089573378, guid: fbb7c8c318a3a9549aaf6d4f1d307088, type: 3}
+  - {fileID: 1695278334736305791, guid: 4f9c411f496ac4749a331b065ca392b4, type: 3}
+  - {fileID: 8213189003426810295, guid: 01eb56da1d678cb498293946dcca3095, type: 3}
+  - {fileID: 4328558071304841989, guid: a471ca4bca8886748b9f400d8991f099, type: 3}

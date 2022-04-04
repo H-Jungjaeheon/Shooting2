@@ -44,7 +44,14 @@ public class Enemy : MonoBehaviour
     }
     public virtual void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Bullet"))
+        if(other.gameObject.CompareTag("Player"))
+        {
+            Hp -= GameManager.Instance.Damage / 2;
+            if(GameManager.Instance.IsShield == false && GameManager.Instance.IsHit == false)
+                GameManager.Instance.Hp -= Damage;
+            StartCoroutine(Hit());
+        }
+        else if (other.gameObject.CompareTag("Bullet"))
         {
             Hp -= GameManager.Instance.Damage;
             StartCoroutine(Hit());

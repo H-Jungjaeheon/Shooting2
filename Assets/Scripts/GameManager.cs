@@ -8,29 +8,54 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; set; }
     //[Header("플레이어 변수들")]
     public float Hp, MaxHp, Pain, MaxPain, Stage, EnemyDead, Damage, ShootLevel, 
-        ShootTime, Speed, Exp, MaxExp, Level, Boom, MaxBoom, Score,
-        BoomTime, MaxBoomTime; //체력 맥체력 고통 맥고통 스테이지 적 죽은 수 데미지 발사 속도 스피드 경험치 레벨 폭탄 맥 폭탄 점수 폭탄 쿨타임 폭탄 맥쿨타임
-    [SerializeField] private GameObject AllUiObj;
+        ShootTime, Speed, MaxSpeed, Exp, MaxExp, Level, Boom, MaxBoom, Score,
+        BoomTime, MaxBoomTime, ShieldCount; //체력 맥체력 고통 맥고통 스테이지 적 죽은 수 데미지 발사 속도 스피드 경험치 레벨 폭탄 맥 폭탄 점수 폭탄 쿨타임 폭탄 맥쿨타임
+    public bool IsShield, ShieldEffcting, IsHit;
+    [SerializeField] private GameObject AllUiObj, Player, Shield;
     [SerializeField] private Image HpBar, PainBar, ExpBar, BoomCoolTime;
     [SerializeField] private Text HpText, PainText, ExpText, LevelText, BoomCount, ScoreText;
+    MeshRenderer MR;
+    [SerializeField] private Material[] ShieldMt;
     private void Awake()
     {
+        MR = Shield.GetComponent<MeshRenderer>();
+        Player = GameObject.Find("Player");
         Score = 0;
         DontDestroyOnLoad(gameObject);
         Instance = this;
     }
-    // Start is called before the first frame update
-    void Start()
+    void Shielding()
     {
-        
+        Shield.transform.position = Player.transform.position;
+        if (ShieldCount <= 0)
+        {
+            Shield.SetActive(false);
+            IsShield = false;
+            ShieldCount = 0;
+            MR.material = ShieldMt[0];
+        }
+        else if(ShieldCount > 0)
+        {
+            Shield.SetActive(true);
+            IsShield = true;
+            ShieldCount -= Time.deltaTime;
+            if(ShieldCount < 2.5f && ShieldCount != 0)
+            {
+                MR.material = ShieldMt[1];
+            }
+            else
+            {
+                MR.material = ShieldMt[0];
+            }
+        }
     }
-
     // Update is called once per frame
     void Update()
     {
         LevelUp();
         PainCount();
         HpBars();
+        Shielding();
     }
     void HpBars()
     {

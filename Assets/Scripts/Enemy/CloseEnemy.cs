@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CloseEnemy : Enemy
 {
-    [SerializeField] private float DMoveCount, MaxDMoveCount, XMax, XMin, a, DMoving;
-    [SerializeField] private bool IsDMove;
+    [SerializeField] private float DMoveCount, MaxDMoveCount, a, DMoving;
+    [SerializeField] private bool IsDMove, Change;
     Rigidbody rigid;
     public override void Start()
     {
@@ -29,14 +29,25 @@ public class CloseEnemy : Enemy
     {
         IsDMove = true;
         DMoving += Time.deltaTime;
-        rigid.position = new Vector3(Mathf.Clamp(rigid.position.x, XMin, XMax), 0, 0);       
         if(IsDMove == true && a == 0)
         {
-            transform.position = transform.position + new Vector3(Speed * Time.deltaTime / 2, 0, 0);
+            if(transform.position.x >= 5)
+            {
+                Change = true;
+                transform.position = transform.position - new Vector3(Speed * Time.deltaTime / 2, 0, 0);
+            }
+            else if(Change == false)
+                transform.position = transform.position + new Vector3(Speed * Time.deltaTime / 2, 0, 0);
         }
         else if (IsDMove == true && a == 1)
         {
-            transform.position = transform.position + new Vector3(-Speed * Time.deltaTime / 2, 0, 0);
+            if (transform.position.x <= -5)
+            {
+                Change = true;
+                transform.position = transform.position + new Vector3(-Speed * Time.deltaTime / 2, 0, 0);
+            }
+            else if(Change == false)
+                transform.position = transform.position - new Vector3(Speed * Time.deltaTime / 2, 0, 0);
         }
         if(DMoving >= 3)
         {
@@ -45,6 +56,7 @@ public class CloseEnemy : Enemy
     }
     void StopDMove()
     {
+        Change = false;
         DMoveCount = 0;
         DMoving = 0;
         IsDMove = false;

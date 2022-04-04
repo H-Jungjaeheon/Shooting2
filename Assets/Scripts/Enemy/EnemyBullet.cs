@@ -21,7 +21,8 @@ public class EnemyBullet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            GameManager.Instance.Hp -= Damage;
+            if(GameManager.Instance.IsShield == false && GameManager.Instance.IsHit == false)
+                GameManager.Instance.Hp -= Damage;
             Destroy(this.gameObject);
         }
         else if (other.gameObject.CompareTag("DestroyObj"))

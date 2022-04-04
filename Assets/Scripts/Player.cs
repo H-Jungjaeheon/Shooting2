@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class Player : MonoBehaviour
 {
@@ -9,9 +10,14 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject[] Enemys;
     [SerializeField] private bool IsBoom;
     Rigidbody rigid;
+    MeshRenderer MR;
+    [SerializeField] private Material[] material;
+    [SerializeField] private CinemachineImpulseSource Source;
     // Start is called before the first frame update
     void Start()
     {
+        MR = GetComponent<MeshRenderer>();
+        Source = GetComponent<CinemachineImpulseSource>();
         GameManager.Instance.Pain = GameManager.Instance.Stage == 1 ? 10 : 30;
         NowShootTime = GameManager.Instance.ShootTime;
         rigid = GetComponent<Rigidbody>();
@@ -125,5 +131,22 @@ public class Player : MonoBehaviour
     {
         rigid.velocity = new Vector3(Input.GetAxisRaw("Horizontal") * GameManager.Instance.Speed, 0, Input.GetAxisRaw("Vertical") * GameManager.Instance.Speed);
         rigid.position = new Vector3(Mathf.Clamp(rigid.position.x, MinX, MaxX), 0, Mathf.Clamp(rigid.position.z, MinZ, MaxZ));
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyBullet") && GameManager.Instance.IsShield == false)
+        {
+            StartCoroutine(Hits());
+        }
+    }
+    IEnumerator Hits()
+    {
+        Source.GenerateImpulse();
+        GameManager.Instance.IsHit = true;
+        MR.material = material[1];
+        yield return new WaitForSeconds(3);
+        GameManager.Instance.IsHit = false;
+        MR.material = material[0];
+        yield return null;
     }
 }

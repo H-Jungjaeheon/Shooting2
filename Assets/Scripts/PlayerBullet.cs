@@ -22,7 +22,7 @@ public class PlayerBullet : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("DestroyObj"))
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("DestroyObj") || other.gameObject.CompareTag("Cell"))
         {
             Destroy(this.gameObject);
         }
