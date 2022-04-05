@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; set; }
     //[Header("ÇÃ·¹ÀÌ¾î º¯¼öµé")]
-    public float Hp, MaxHp, Pain, MaxPain, Stage, EnemyDead, Damage, ShootLevel, 
+    public float Hp, MaxHp, Pain, MaxPain, Stage, EnemyDead, Damage, ShootLevel,
         ShootTime, Speed, MaxSpeed, Exp, MaxExp, Level, Boom, MaxBoom, Score,
         BoomTime, MaxBoomTime, ShieldCount; //Ã¼·Â ¸ÆÃ¼·Â °íÅë ¸Æ°íÅë ½ºÅ×ÀÌÁö Àû Á×Àº ¼ö µ¥¹ÌÁö ¹ß»ç ¼Óµµ ½ºÇÇµå °æÇèÄ¡ ·¹º§ ÆøÅº ¸Æ ÆøÅº Á¡¼ö ÆøÅº ÄðÅ¸ÀÓ ÆøÅº ¸ÆÄðÅ¸ÀÓ
     public bool IsShield, ShieldEffcting, IsHit;
@@ -34,12 +35,12 @@ public class GameManager : MonoBehaviour
             ShieldCount = 0;
             MR.material = ShieldMt[0];
         }
-        else if(ShieldCount > 0)
+        else if (ShieldCount > 0)
         {
             Shield.SetActive(true);
             IsShield = true;
             ShieldCount -= Time.deltaTime;
-            if(ShieldCount < 2.5f && ShieldCount != 0)
+            if (ShieldCount < 2.5f && ShieldCount != 0)
             {
                 MR.material = ShieldMt[1];
             }
@@ -73,14 +74,14 @@ public class GameManager : MonoBehaviour
         {
             Hp = MaxHp;
         }
-        if(Pain >= MaxPain)
+        if (Pain >= MaxPain)
         {
             Pain = MaxPain;
         }
     }
     void LevelUp()
     {
-        if(Exp >= MaxExp)
+        if (Exp >= MaxExp)
         {
             Exp = 0;
             MaxExp += 10 * Level;

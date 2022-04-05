@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using System.IO;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private float MaxX, MinX, MaxZ, MinZ, NowShootTime;
     [SerializeField] private GameObject Bullet;
-    [SerializeField] private GameObject[] Enemys;
+    [SerializeField] private GameObject[] Enemys, Bullets;
     [SerializeField] private bool IsBoom;
     Rigidbody rigid;
     MeshRenderer MR;
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Json();
         MR = GetComponent<MeshRenderer>();
         Source = GetComponent<CinemachineImpulseSource>();
         GameManager.Instance.Pain = GameManager.Instance.Stage == 1 ? 10 : 30;
@@ -33,28 +35,33 @@ public class Player : MonoBehaviour
     private void Boom()
     {
         Enemys = GameObject.FindGameObjectsWithTag("Enemy");
+        Bullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
         if (Input.GetKeyDown(KeyCode.J) && GameManager.Instance.Boom > 0 && IsBoom == false)
         {
             IsBoom = true;
             GameManager.Instance.Boom--;
             GameManager.Instance.BoomTime = GameManager.Instance.MaxBoomTime;
-            if(Enemys != null)
+            if (Enemys != null)
             {
-                for (int a = 0; a < Enemys.Length; a++)
+                foreach (GameObject a in Enemys)
                 {
-                    if(Enemys[a].GetComponent<Enemy>().IsStart == false && Enemys[a].GetComponent<Enemy>().IsBreak == false)
+                    if (a.GetComponent<Enemy>().IsStart == false && a.GetComponent<Enemy>().IsBreak == false)
                     {
-                        Enemys[a].GetComponent<Enemy>().Hp -= GameManager.Instance.Damage * 4;
+                        a.GetComponent<Enemy>().Hp -= GameManager.Instance.Damage * 4;
                     }
-                    else if(Enemys[a].GetComponent<Enemy>().IsStart == false && Enemys[a].GetComponent<Enemy>().IsBreak == true)
+                    else if (a.GetComponent<Enemy>().IsStart == false && a.GetComponent<Enemy>().IsBreak == true)
                     {
-                        Enemys[a].GetComponent<ShieldEnemy>().ShieldHp -= GameManager.Instance.Damage * 4;
+                        a.GetComponent<ShieldEnemy>().ShieldHp -= GameManager.Instance.Damage * 4;
                     }
                     //파티클, 작동 확인
                 }
+                foreach (GameObject b in Bullets)
+                {
+                    Destroy(b);
+                }
             }
         }
-        else if(IsBoom == true)
+        else if (IsBoom == true)
         {
             BoomCooltime();
         }
@@ -62,7 +69,7 @@ public class Player : MonoBehaviour
     private void BoomCooltime()
     {
         GameManager.Instance.BoomTime -= Time.deltaTime;
-        if(GameManager.Instance.BoomTime <= 0)
+        if (GameManager.Instance.BoomTime <= 0)
         {
             GameManager.Instance.BoomTime = 0;
             IsBoom = false;
@@ -70,17 +77,17 @@ public class Player : MonoBehaviour
     }
     private void Shoot()
     {
-        NowShootTime += Time.deltaTime; 
+        NowShootTime += Time.deltaTime;
         if (Input.GetKey(KeyCode.H) && NowShootTime >= GameManager.Instance.ShootTime)
         {
             NowShootTime = 0;
             switch (GameManager.Instance.ShootLevel) //총알 많이 나가고 모양 변경
             {
                 case 1:
-                    Instantiate(Bullet, transform.position + new Vector3(0,0,1), Bullet.transform.rotation);
+                    Instantiate(Bullet, transform.position + new Vector3(0, 0, 1), Bullet.transform.rotation);
                     break;
                 case 2:
-                    for(float a = -0.5f; a <= 0.5f; a += 1)
+                    for (float a = -0.5f; a <= 0.5f; a += 1)
                     {
                         Instantiate(Bullet, transform.position + new Vector3(a, 0, 1), Bullet.transform.rotation);
                     }
@@ -88,7 +95,7 @@ public class Player : MonoBehaviour
                 case 3:
                     for (float a = -0.5f; a <= 0.5f; a += 0.5f)
                     {
-                        if(a == 0)
+                        if (a == 0)
                             Instantiate(Bullet, transform.position + new Vector3(a, 0, 1.5f), Bullet.transform.rotation);
                         else
                             Instantiate(Bullet, transform.position + new Vector3(a, 0, 1), Bullet.transform.rotation);
@@ -122,7 +129,7 @@ public class Player : MonoBehaviour
                     break;
             }
         }
-        else if(NowShootTime >= GameManager.Instance.ShootTime)
+        else if (NowShootTime >= GameManager.Instance.ShootTime)
         {
             NowShootTime = GameManager.Instance.ShootTime;
         }
@@ -134,7 +141,7 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyBullet") && GameManager.Instance.IsShield == false)
+        if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("EnemyBullet") && GameManager.Instance.IsShield == false)
         {
             StartCoroutine(Hits());
         }
@@ -149,4 +156,19 @@ public class Player : MonoBehaviour
         MR.material = material[0];
         yield return null;
     }
+    void Json()
+    {
+        PlayerStats PS = new PlayerStats();
+        PS.Hp = GameManager.Instance.Hp;
+        string json = JsonUtility.ToJson(PS);
+        string filename = "PlayerStats";
+        string where = Application.dataPath + "/" + filename + ".json";
+        File.WriteAllText(where, json);
+    }
 }
+public class PlayerStats
+{
+    public float Hp;
+}
+
+

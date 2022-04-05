@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyBullet : MonoBehaviour
 {
     [SerializeField] private float Speed, Damage, BulletKind;
+    [SerializeField] private GameObject Bullet;
+    [SerializeField] private bool IsSpawn;
  
     void FixedUpdate()
     {
@@ -12,10 +14,23 @@ public class EnemyBullet : MonoBehaviour
     }
     void Move()
     {
-        if(BulletKind == 0)
-            transform.Translate(0, 0, -Speed * Time.deltaTime);
-        else if(BulletKind == 1)
+        if (BulletKind == 0)
+            transform.Translate(0, 0, 0);
+        else if (BulletKind == 1)
             transform.Translate(0, -Speed * Time.deltaTime, 0);
+        else if (BulletKind == 2)
+        {
+            transform.Translate(0, 0, -Speed * Time.deltaTime);
+            transform.RotateAround(GameObject.Find("NullBullet").transform.position, Vector3.down, 2f);
+        }
+        else if(BulletKind == 3 && IsSpawn == false)
+        {
+            for(int a = 0; a <= 360; a += 40)
+            {
+                Instantiate(Bullet, transform.position, Quaternion.Euler(0, a, 0));
+            }
+            IsSpawn = true;
+        }
     }
     private void OnTriggerEnter(Collider other)
     {
